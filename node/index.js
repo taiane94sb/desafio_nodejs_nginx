@@ -1,3 +1,4 @@
+const { log } = require('console');
 const http = require('http');
 
 const hostname = '0.0.0.0';
@@ -13,7 +14,7 @@ const config = {
 const mysql = require('mysql')
 const connection = mysql.createConnection(config)
 
-connection.query(`CREATE TABLE people (name varchar(255))`)
+connection.query(`CREATE TABLE IF NOT EXISTS people (name varchar(255))`)
 connection.query(`ALTER TABLE people AUTO_INCREMENT = 1`)
 
 connection.query(`INSERT INTO people (name) values ('Taiane')`)
@@ -36,19 +37,19 @@ connection.query(sql, (error, results, fields) => {
   });
   people = people + "</ol>";
 });
-
-connection.end()
-
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html');
   res.end('\
-    <h1>Full Cycle Rocks!</h1> \
-    <hr> \
-    <h2>People</h2> \
-    ' + people + ' \
+  <h1>Full Cycle Rocks!</h1> \
+  <hr> \
+  <h2>People</h2> \
+  ' + people + ' \
   ');
+  console.log(people);
 });
+
+connection.end()
 
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
